@@ -35,6 +35,12 @@ Runs are stored in `.lps/lps.duckdb`.
 uv run lps --target https://httpbin.org/get --pattern viral --duration 180
 ```
 
+## Visuals
+
+CLI demo (viral spike run)
+
+![CLI demo](docs/cli-demo.gif)
+
 ## Architecture overview
 
 - `lps/patterns/`: traffic patterns and schedule generation

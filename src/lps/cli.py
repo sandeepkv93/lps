@@ -55,7 +55,7 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=50)
     parser.add_argument("--seed", type=int, default=7)
 
-    parser.add_argument("--baseline-rps", type=float, default=30.0)
+    parser.add_argument("--baseline-rps", type=float, default=20.0)
     parser.add_argument("--burst-rps", type=float, default=500.0)
     parser.add_argument("--burst-duration-sec", type=int, default=10)
     parser.add_argument("--burst-interval-sec", type=int, default=120)
@@ -66,10 +66,10 @@ def main() -> None:
     parser.add_argument("--cycle-duration-sec", type=int, default=1800)
     parser.add_argument("--shape", choices=["sine", "gaussian", "commuter"], default="sine")
 
-    parser.add_argument("--spike-multiplier", type=float, default=100.0)
-    parser.add_argument("--ramp-up-sec", type=int, default=45)
-    parser.add_argument("--peak-hold-sec", type=int, default=120)
-    parser.add_argument("--decay-half-life-sec", type=int, default=90)
+    parser.add_argument("--spike-multiplier", type=float, default=30.0)
+    parser.add_argument("--ramp-up-sec", type=int, default=30)
+    parser.add_argument("--peak-hold-sec", type=int, default=60)
+    parser.add_argument("--decay-half-life-sec", type=int, default=60)
 
     args = parser.parse_args()
 

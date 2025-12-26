@@ -68,7 +68,8 @@ async def _execute_load(
             error_rate_threshold=config.circuit_breaker.error_rate_threshold,
             open_cooldown_sec=config.circuit_breaker.open_cooldown_sec,
         )
-    async with httpx.AsyncClient() as client:
+    limits = httpx.Limits(max_connections=1000, max_keepalive_connections=200)
+    async with httpx.AsyncClient(limits=limits) as client:
         if config.load_model is LoadModel.CLOSED_LOOP:
             await _closed_loop(
                 client,
@@ -107,36 +108,47 @@ async def _open_loop(
     tasks: list[asyncio.Task[None]] = []
     lock = asyncio.Lock()
     rng = random.Random(config.seed)
-    for second, rate in enumerate(requested_rates):
+    total = len(requested_rates)
+    second = 0
+    while second < total:
+        elapsed = time.perf_counter() - started_mono
+        current_second = int(elapsed)
+        if current_second > second:
+            second = current_second
+            if second >= total:
+                break
+        rate = requested_rates[second]
         n = int(rate)
         if rate - n > 0 and rng.random() < (rate - n):
             n += 1
-        if n <= 0:
-            await _sleep_until_next_second(started_mono, second)
-            if progress:
-                await progress(second + 1, len(requested_rates))
-            continue
-        for i in range(n):
-            offset = (i / n) if n > 0 else 0.0
-            tasks.append(
-                asyncio.create_task(
-                    _schedule_one(
-                        client,
-                        run_id,
-                        config,
-                        events,
-                        breaker,
-                        started_mono,
-                        lock,
-                        second + offset,
+        if n > 0:
+            for i in range(n):
+                offset = (i / n) if n > 0 else 0.0
+                tasks.append(
+                    asyncio.create_task(
+                        _schedule_one(
+                            client,
+                            run_id,
+                            config,
+                            events,
+                            breaker,
+                            started_mono,
+                            lock,
+                            second + offset,
+                        )
                     )
                 )
-            )
         await _sleep_until_next_second(started_mono, second)
         if progress:
-            await progress(second + 1, len(requested_rates))
+            await progress(min(second + 1, total), total)
+        second += 1
     if tasks:
-        await asyncio.gather(*tasks)
+        try:
+            await asyncio.wait_for(asyncio.gather(*tasks), timeout=_grace_timeout(config))
+        except asyncio.TimeoutError:
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
 
 async def _closed_loop(
@@ -225,3 +237,7 @@ def _rate_for_time(rates: list[float], elapsed: float) -> float:
     if idx < 0 or idx >= len(rates):
         return 0.0
     return rates[idx]
+
+
+def _grace_timeout(config: RunConfig) -> float:
+    return max(5.0, min(30.0, config.target.timeout_sec * 2))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import time
 
 
@@ -11,7 +11,7 @@ class CircuitBreaker:
     error_rate_threshold: float
     open_cooldown_sec: float
     state: str = "closed"  # closed | open | half_open
-    _history: deque[bool] = deque()
+    _history: deque[bool] = field(default_factory=deque)
     _opened_at: float | None = None
 
     def allow_request(self) -> bool:

@@ -96,11 +96,11 @@ def _pattern_config(pattern_type: str) -> PatternConfig:
             shape = st.selectbox("Shape", ["sine", "gaussian", "commuter"])
             cfg = DiurnalConfig(min_rps=min_rps, max_rps=max_rps, cycle_duration_sec=cycle, shape=shape)
             return PatternConfig(PatternType.DIURNAL, asdict(cfg))
-        baseline = st.number_input("Baseline RPS", min_value=1.0, value=30.0)
-        multiplier = st.number_input("Spike multiplier", min_value=2.0, value=100.0)
-        ramp = st.number_input("Ramp up (sec)", min_value=1, value=45)
-        hold = st.number_input("Peak hold (sec)", min_value=1, value=120)
-        half_life = st.number_input("Decay half-life (sec)", min_value=1, value=90)
+        baseline = st.number_input("Baseline RPS", min_value=1.0, value=20.0)
+        multiplier = st.number_input("Spike multiplier", min_value=2.0, value=30.0)
+        ramp = st.number_input("Ramp up (sec)", min_value=1, value=30)
+        hold = st.number_input("Peak hold (sec)", min_value=1, value=60)
+        half_life = st.number_input("Decay half-life (sec)", min_value=1, value=60)
         cfg = ViralSpikeConfig(
             baseline_rps=baseline,
             spike_multiplier=multiplier,
