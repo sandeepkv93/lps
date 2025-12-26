@@ -1,0 +1,4 @@
+# file: /home/sandeepkv/dev/python-projects/lps/src/lps/config/models.py
+# hypothesis_version: 6.148.8
+
+[0.05, 0.2, 0.5, 2.0, 5.0, 10.0, 'GET', 'base_delay_sec', 'base_url', 'bursty', 'circuit_breaker', 'closed_loop', 'closed_loop_workers', 'created_at', 'diurnal', 'duration_sec', 'enabled', 'error_rate_threshold', 'headers', 'load_model', 'max_delay_sec', 'max_retries', 'method', 'notes', 'open_cooldown_sec', 'open_loop', 'params', 'pattern', 'retry', 'run_id', 'seed', 'sine', 'target', 'timeout_sec', 'type', 'viral_spike', 'window_size']
