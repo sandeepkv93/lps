@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.lps/
+.hypothesis/
+*.egg-info/
+.streamlit/

@@ -1,4 +1,0 @@
-# file: /home/sandeepkv/dev/python-projects/lps/src/lps/patterns/diurnal.py
-# hypothesis_version: 6.148.8
-
-[-0.5, 0.08, 0.1, 0.18, 0.25, 0.33, 0.5, 0.72, 1.0, 2.0, 'commuter', 'gaussian']
